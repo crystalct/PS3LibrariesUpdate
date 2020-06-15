@@ -12,6 +12,8 @@ ${MAKE:-make} all
 
 ## Copy samples to $PS3SRC/samples/tiny3D
 mkdir -p $PS3SRC/samples/tiny3D
+mkdir -p $PS3SRC/samples/PSL1GHT
 
 cp -frv samples/* $PS3SRC/samples/tiny3D
-echo Samples copied to $PS3SRC/samples/tiny3D
+cp -frv PSL1GHT.samples/* $PS3SRC/samples/PSL1GHT
+echo Samples copied to $PS3SRC/samples/PSL1GHT and $PS3SRC/samples/tiny3D
