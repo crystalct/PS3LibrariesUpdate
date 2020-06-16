@@ -3,6 +3,11 @@
 #include "vpparser.h"
 #include "compiler.h"
 #include "compilerfp.h"
+#include <unistd.h>
+
+#ifdef WIN32
+#include <libgen.h>
+#endif
 
 #if !defined(WIN32)
 #include <dlfcn.h>
@@ -18,6 +23,12 @@
 #else
 #define SWAP16(v) ((v)>>8)|((v)<<8)
 #define SWAP32(v) ((v)>>24)|((v)<<24)|(((v)&0xFF00)<<8)|(((v)&0xFF0000)>>8)
+#endif
+
+#ifdef __CYGWIN__
+	char currdir[1024];
+	char destfile[1026];
+	
 #endif
 
 struct _options
@@ -61,7 +72,7 @@ _cgGetLastListing cgGetLastListing=NULL;
 static bool InitCompiler()
 {
 #if defined(WIN32)
-	HMODULE libcgc=LoadLibrary("./cg.dll");
+	HMODULE libcgc=LoadLibrary("cg.dll");
 	
 #elif defined(__APPLE__)
     void *libcgc=dlopen("Cg", RTLD_LAZY);
@@ -120,9 +131,29 @@ void readoptions(struct _options *options,int argc,char *argv[])
 			break;
 	}
 	if(i+2!=argc) usage();
-
 	options->src_file = argv[i];
 	options->dst_file = argv[i+1];
+#ifdef __CYGWIN__
+	if (options->src_file[0] == '/') {		//workaround to solve full path file source problem with cgywin
+		
+		char *fname, *path;
+		if (options->dst_file[0] != '/') {
+			sprintf(destfile, "%s/%s",currdir,  options->dst_file);
+			options->dst_file = destfile;
+			printf("destfile %s\n", options->dst_file);
+		}
+		
+		printf("currdir %s\n", currdir);
+		fname = basename((char *)options->src_file);
+		path = (char *)dirname((char *)options->src_file);
+		//printf("FIle: %s\n",fname);
+		//printf("path: %s\n", path);
+		chdir(path);	
+		options->src_file = fname;
+	}
+#endif
+	
+	
 }
 
 char* readfile(const char *filename)
@@ -161,6 +192,7 @@ int compileVP()
 	if(Options.gen_asm==true) {
 		prg = readfile(Options.src_file);
 	} else {
+		
 		context = cgCreateContext();
 		program = cgCreateProgramFromFile(context,CG_SOURCE,Options.src_file,CG_PROFILE_VP40,Options.entry,NULL);
 		if(program==NULL) {
@@ -468,7 +500,7 @@ int compileFP()
 int main(int argc,char *argv[])
 {
 	int ret = 0;
-
+	getcwd(currdir, sizeof(currdir));
 	readoptions(&Options,argc,argv);
 
 	if(Options.gen_asm!=true && !InitCompiler()) {
