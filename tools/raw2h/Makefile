@@ -13,6 +13,7 @@ clean:
 	rm -rf $(TARGET)
 
 install: all
+	@chmod a+x $(TARGET)
 	@cp $(TARGET) $(PS3DEV)/ppu/bin/
 
 $(TARGET): $(CFILES)
