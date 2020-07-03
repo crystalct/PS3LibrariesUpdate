@@ -1,0 +1,13 @@
+diff -Naur a/crypto/pkcs7/bio_pk7.c b/crypto/pkcs7/bio_pk7.c
+--- a/crypto/pkcs7/bio_pk7.c	2018-09-11 08:03:12.798755079 +0200
++++ b/crypto/pkcs7/bio_pk7.c	2018-09-11 08:03:33.482873155 +0200
+@@ -11,9 +11,6 @@
+ #include <openssl/pkcs7.h>
+ #include <openssl/bio.h>
+ 
+-#if !defined(OPENSSL_SYS_VXWORKS)
+-# include <memory.h>
+-#endif
+ #include <stdio.h>
+ 
+ /* Streaming encode support for PKCS#7 */

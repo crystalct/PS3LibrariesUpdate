@@ -1,0 +1,11 @@
+--- 10-main.conf	2020-07-03 11:28:29.663309600 +0200
++++ 10-main.conf_new	2020-07-03 11:29:22.463422100 +0200
+@@ -645,7 +645,7 @@
+         cflags           => threads("-pthread"),
+         cxxflags         => combine("-std=c++11", threads("-pthread")),
+         lib_cppflags     => "-DOPENSSL_USE_NODELETE",
+-        ex_libs          => add("-ldl", threads("-pthread")),
++        ex_libs          => add(threads("-pthread")),
+         bn_ops           => "BN_LLONG RC4_CHAR",
+         thread_scheme    => "pthreads",
+         dso_scheme       => "dlfcn",
