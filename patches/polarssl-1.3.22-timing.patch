@@ -1,0 +1,10 @@
+--- library/timing.c  
++++ library/timing.c	
+@@ -45,6 +45,7 @@
+ #include <sys/types.h>
+ #include <sys/time.h>
+ #include <signal.h>
++#include <net/select.h>
+ #include <time.h>
+
+ 
